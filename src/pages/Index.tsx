@@ -1,53 +1,15 @@
 
-import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "../components/auth/LoginPage";
-import RegisterPage from "../components/auth/RegisterPage";
-import Dashboard from "../components/dashboard/Dashboard";
-import FacultyDashboard from "../components/faculty/FacultyDashboard";
-import HODDashboard from "../components/hod/HODDashboard";
 import { useAuth } from "../hooks/useAuth";
 
 const Index = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <AuthProvider>
-        <Router>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/faculty" element={<ProtectedRoute><FacultyDashboard /></ProtectedRoute>} />
-            <Route path="/hod" element={<ProtectedRoute><HODDashboard /></ProtectedRoute>} />
-            <Route path="/" element={<LandingPage />} />
-          </Routes>
-        </Router>
-      </AuthProvider>
-    </div>
-  );
-};
-
-const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<any>(null);
-  
-  return (
-    <div>
-      {children}
-    </div>
-  );
-};
-
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
-  
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return <>{children}</>;
-};
 
-const LandingPage = () => {
+  // If user is logged in, redirect to appropriate dashboard
+  if (user) {
+    window.location.href = user.role === 'hod' ? '/hod' : '/faculty';
+    return null;
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800">
       <div className="text-center text-white px-8">
